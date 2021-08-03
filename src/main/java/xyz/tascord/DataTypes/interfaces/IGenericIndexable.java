@@ -4,6 +4,7 @@ import xyz.tascord.DataTypes.GenericValue;
 
 public interface IGenericIndexable {
     
-    public GenericValue Index(GenericValue value);
+    public GenericValue GetIndex(GenericValue index);
+    public void SetIndex(GenericValue index, GenericValue value);
 
 }

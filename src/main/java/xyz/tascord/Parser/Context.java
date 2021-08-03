@@ -1,7 +1,6 @@
 package xyz.tascord.Parser;
 
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.HashMap;
 
 import xyz.tascord.DataTypes.GenericVariable;
@@ -16,7 +15,7 @@ public class Context {
     }
 
     public Context parentScope = null;
-    public String contextName = null;
+    public String contextName = "Cork.Body";
     public HashMap<String, GenericVariable> scopedVariables = new HashMap<>();
 
     public ArrayList<Token> inputBuffer = new ArrayList<>();
@@ -26,16 +25,26 @@ public class Context {
 
     public Boolean valid() {
 
-        int index = this.inputBuffer.size() - 1; 
+        int index = this.expectedTypes.size() - 1; 
 
         if(index == -1) return true;
         if(expectedTypes.size() - 2 < index) return true;
 
         System.out.println(index + ") " + this.inputBuffer.toString() + ", " + this.expectedTypes.toString());
-        if(index > expectedTypes.size() - 1) throw new Error(String.format("Index %1$s greater than size %2$s", index, expectedTypes.size()));
+        TokenOr expectedType = expectedTypes.get(index);
 
-        TokenType currentType = this.inputBuffer.get(index - 1).type;
-        return expectedTypes.get(index).possibilities.contains(currentType);
+        TokenType currentType = this.inputBuffer.get(this.inputBuffer.size() - 1).type;
+        if(!expectedType.repeat) this.expectedTypes.remove(index);
+
+        boolean validity = expectedTypes.get(index).possibilities.contains(currentType);
+        
+        if(!validity && expectedType.repeat) {
+            this.expectedTypes.remove(index);
+            return valid();
+        } 
+
+        return validity;
+
     }
     
     public String toString() {

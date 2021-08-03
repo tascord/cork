@@ -12,17 +12,28 @@ public class ObjectVariable extends GenericVariable implements IGenericIndexable
     public ObjectVariable() {
         super(GenericType.OBJECT);
     }
+
+    public ObjectVariable(HashMap<String, GenericValue> value) {
+        super(GenericType.OBJECT);
+        this.value = value;
+    }
     
     private HashMap<String, GenericValue> value = new HashMap<>();
 
     @Override
-    public GenericValue Index(GenericValue value) {
-        return this.value.get(value.Stringify());
+    public GenericValue GetIndex(GenericValue index) {
+        return this.value.get(index.Stringify());
+    }
+
+    @Override
+    public void SetIndex(GenericValue index, GenericValue value) {
+        this.value.put(index.Stringify(), value);
     }
 
     @Override
     public String Stringify() {
         return "{Object}";
     }
+
 
 }

@@ -70,7 +70,7 @@ public class NumericalVariable extends GenericVariable implements IGenericOperab
                 return new StringVariable(String.valueOf(this.value));
 
             case CONTAINER:
-                return new ArrayVairable(this);
+                return new ArrayVariable(this);
 
             default:
                 return null;

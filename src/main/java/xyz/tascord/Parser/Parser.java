@@ -22,6 +22,7 @@ public class Parser {
     public ArrayList<Token> Tokenize(String input) {
 
         String buffer = "";
+        boolean inString = false;
         ArrayList<Token> tokens = new ArrayList<>();
 
         // Tokenization
@@ -68,11 +69,15 @@ public class Parser {
                     tokens.add(new Token(TokenType.END));
                     buffer = "";
                     continue;
+                
+                case '"':
+                    inString = !inString;
+                    break;
 
             }
 
             // Skip spaces
-            if (current != ' ' && current != '\n') {
+            if ((current != ' ' && current != '\n') || inString) {
                 buffer += current;
                 continue;
             }
@@ -101,16 +106,32 @@ public class Parser {
         Context ctxProgram = new Context();
         Context ctxCurrent = ctxProgram;
 
-        tokens.forEach(token -> {
+        for(Token token : tokens) {
 
             if(!ctxCurrent.valid()) throw new Error("Invalid token type \"" + ctxCurrent.inputBuffer.get(ctxCurrent.inputBuffer.size() -1 ).type.toString() + "\". Expected \"" + ctxCurrent.expectedTypes.get(ctxCurrent.inputBuffer.size() - 1).possibilities.toString() + "\"");
             ctxCurrent.inputBuffer.add(token);
 
-            if(token.type == TokenType.FUNCTION) {
-                ctxCurrent.expectedTypes.add(new TokenOr(TokenType.LITERAL));
+            // Enter functions
+            if(token.type == TokenType.FNOPEN) {
+                // TODO: Find name
+                ctxCurrent = new Context(ctxCurrent, "Todo lol");
             }
 
-        });
+            // Exit functions
+            else if(token.type == TokenType.FNOPEN) {
+                ctxCurrent = ctxCurrent.parentScope;
+            }
+
+            else if(token.type == TokenType.FUNCTION) {
+                ctxCurrent.expectedTypes.add(new TokenOr(TokenType.LITERAL)); // Name
+                ctxCurrent.expectedTypes.add(new TokenOr(TokenType.OPEN)); // Open Arg
+                ctxCurrent.expectedTypes.add(new TokenOr(TokenType.LITERAL, true)); // Arguments
+                ctxCurrent.expectedTypes.add(new TokenOr(TokenType.CLOSE)); // Close Arg
+                ctxCurrent.expectedTypes.add(new TokenOr(TokenType.FNOPEN)); // Open Fn
+                ctxCurrent.expectedTypes.add(new TokenOr(TokenType.FNCLOSE)); // Close Fn
+            }
+
+        };
 
         System.out.println(ctxCurrent.toString());
 

@@ -53,18 +53,31 @@ public class StringVariable extends GenericVariable implements IGenericIndexable
     }
 
     @Override
-    public GenericValue Index(GenericValue value) {
+    public GenericValue GetIndex(GenericValue raw_index) {
 
-        if(value.type != GenericType.NUMERICAL) return null;
-        int index = (int) value.GetValue();
+        if(raw_index.type != GenericType.NUMERICAL) throw new Error(String.format("Invalid index '%s'", raw_index.Stringify()));
+        int index = (int) raw_index.GetValue();
 
-        if(this.value.length() < index) return null;
+        if(this.value.length() < index) throw new Error(String.format("Index out of bounds '%s'", index));
         else {
 
             return new GenericValue(GenericType.STRING, String.valueOf(this.value.charAt(index)));
 
         }
         
+    }
+
+    @Override
+    public void SetIndex(GenericValue raw_index, GenericValue value) {
+        if(raw_index.type != GenericType.NUMERICAL) throw new Error(String.format("Invalid index '%s'", raw_index.Stringify()));
+        int index = (int) raw_index.GetValue();
+
+        if(this.value.length() < index) throw new Error(String.format("Index out of bounds '%s'", index));
+        else {
+
+            this.value = this.value.substring(0, index - 1) + value.Stringify() + this.value.substring(index + 1);
+
+        }
     }
 
     @Override
