@@ -15,11 +15,12 @@ public class Term extends ObjectVariable {
 
         this.SetIndex(new GenericValue(GenericType.STRING, "print"), new FunctionVariable(
             new IGenericCallable(){
-            
-                public void Call(ArrayList<GenericVariable> arguments) {
+        
+                @Override
+                public void Call(ArrayList<GenericValue> arguments) {
 
                     System.out.println(String.join(" ", arguments.stream().map(argument -> argument.toString()).toList()));
-
+                    
                 }
 
             }

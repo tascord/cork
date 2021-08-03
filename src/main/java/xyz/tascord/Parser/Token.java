@@ -12,6 +12,8 @@ public class Token {
         FNOPEN,
         PROP,
         VARDEC,
+        INDEX,
+        OPERATOR,
     }
 
     public TokenType type;

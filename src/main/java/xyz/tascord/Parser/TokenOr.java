@@ -1,6 +1,7 @@
 package xyz.tascord.Parser;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import xyz.tascord.Parser.Token.TokenType;
 
@@ -13,8 +14,8 @@ public class TokenOr {
         this.possibilities.add(type);
     }
 
-    public TokenOr(ArrayList<TokenType> types) {
-        this.possibilities = types;
+    public TokenOr(List<TokenType> types) {
+        types.forEach(type -> this.possibilities.add(type));
     }
 
     public TokenOr(TokenType type, boolean repeat) {
@@ -28,7 +29,7 @@ public class TokenOr {
     }
 
     public String toString() {
-        return "TokenOr[" + String.join("or", this.possibilities.stream().map(token -> token.toString()).toList()) + "]";
+        return "TokenOr[" + String.join(" or ", this.possibilities.stream().map(token -> token.toString()).toList()) + "]";
     }
 
 }

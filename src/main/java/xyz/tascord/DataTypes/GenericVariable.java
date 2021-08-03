@@ -8,9 +8,7 @@ public class GenericVariable extends GenericValue {
     }
 
     public GenericVariable Cast(GenericType type) {
-
         return this;
-
     }
 
     public void SetValue(GenericValue value) {

@@ -4,10 +4,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import xyz.tascord.DataTypes.GenericVariable;
+import xyz.tascord.Globals.Term;
 import xyz.tascord.Parser.Token.TokenType;
 
 public class Context {
   
+    public static HashMap<String, GenericVariable> Globals = new HashMap<>() {{
+
+        put("term", new Term());
+
+    }};
+
     public Context() { ; }
     public Context(Context parentScope, String contextName) {
         this.parentScope = parentScope;
@@ -21,7 +28,7 @@ public class Context {
     public ArrayList<Token> inputBuffer = new ArrayList<>();
     public ArrayList<TokenOr> expectedTypes = new ArrayList<>();
  
-    public ArrayList<AbstractCall> body = new ArrayList<>();
+    public ArrayList<IRawCall> body = new ArrayList<>();
 
     public Boolean valid() {
 
@@ -57,6 +64,12 @@ public class Context {
                "expectedTypes: " + this.expectedTypes.toString() + ", " + 
                "body: " + this.body.toString() + "}";   
 
+    }
+
+    public GenericVariable getVariable(String name) {
+        GenericVariable variable = this.scopedVariables.get(name);
+        if(variable == null) variable = Globals.get(name);
+        return variable;
     }
 
 }
